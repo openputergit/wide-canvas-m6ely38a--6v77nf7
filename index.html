@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hall Booking System</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css" rel="stylesheet">
+    <style>
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.5);
+        }
+        .datepicker::-webkit-calendar-picker-indicator {
+            background-color: white;
+            padding: 5px;
+            border-radius: 3px;
+        }
+    </style>
+</head>
+<body class="bg-gray-100">
+
+<!-- Navbar -->
+<nav class="bg-blue-600 p-4 text-white">
+    <div class="container mx-auto flex justify-between items-center">
+        <h1 class="text-2xl font-bold">Hall Booking System</h1>
+        <div class="space-x-4">
+            <button onclick="showHome()" class="hover:text-gray-200">Home</button>
+            <button onclick="showUserProfile()" class="hover:text-gray-200">User Profile</button>
+            <button onclick="showVendorProfile()" class="hover:text-gray-200">Vendor Profile</button>
+        </div>
+    </div>
+</nav>
+
+<!-- Home Page -->
+<div id="homePage" class="container mx-auto p-8">
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <!-- Hall listings will be dynamically inserted here -->
+    </div>
+</div>
+
+<!-- User Profile Modal -->
+<div id="userProfileModal" class="modal">
+    <div class="bg-white p-8 max-w-md mx-auto mt-20 rounded-lg">
+        <div class="flex justify-between mb-4">
+            <h2 class="text-2xl font-bold">User Profile</h2>
+            <button onclick="closeModal('userProfileModal')" class="text-gray-500 hover:text-gray-700">
+                <i class="bi bi-x-lg"></i>
+            </button>
+        </div>
+        <form id="userProfileForm">
+            <input type="text" placeholder="Name" class="w-full p-2 mb-4 border rounded" required>
+            <input type="email" placeholder="Email" class="w-full p-2 mb-4 border rounded" required>
+            <input type="tel" placeholder="Phone" class="w-full p-2 mb-4 border rounded" required>
+            <button type="submit" class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 w-full">
+                Save Profile
+            </button>
+        </form>
+    </div>
+</div>
+
+<!-- Vendor Profile Modal -->
+<div id="vendorProfileModal" class="modal">
+    <div class="bg-white p-8 max-w-md mx-auto mt-20 rounded-lg">
+        <div class="flex justify-between mb-4">
+            <h2 class="text-2xl font-bold">Vendor Profile</h2>
+            <button onclick="closeModal('vendorProfileModal')" class="text-gray-500 hover:text-gray-700">
+                <i class="bi bi-x-lg"></i>
+            </button>
+        </div>
+        <form id="vendorProfileForm">
+            <input type="text" placeholder="Business Name" class="w-full p-2 mb-4 border rounded" required>
+            <input type="email" placeholder="Business Email" class="w-full p-2 mb-4 border rounded" required>
+            <input type="tel" placeholder="Business Phone" class="w-full p-2 mb-4 border rounded" required>
+            <button type="submit" class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 w-full">
+                Save Profile
+            </button>
+        </form>
+        <button onclick="showAddHallForm()" class="mt-4 bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700 w-full">
+            Add New Hall
+        </button>
+    </div>
+</div>
+
+<!-- Add Hall Modal -->
+<div id="addHallModal" class="modal">
+    <div class="bg-white p-8 max-w-md mx-auto mt-20 rounded-lg">
+        <div class="flex justify-between mb-4">
+            <h2 class="text-2xl font-bold">Add New Hall</h2>
+            <button onclick="closeModal('addHallModal')" class="text-gray-500 hover:text-gray-700">
+                <i class="bi bi-x-lg"></i>
+            </button>
+        </div>
+        <form id="addHallForm">
+            <input type="text" placeholder="Hall Name" class="w-full p-2 mb-4 border rounded" required>
+            <textarea placeholder="Description" class="w-full p-2 mb-4 border rounded" required></textarea>
+            <input type="number" placeholder="Capacity" class="w-full p-2 mb-4 border rounded" required>
+            <input type="number" placeholder="Price per Hour" class="w-full p-2 mb-4 border rounded" required>
+            <input type="file" accept="image/*" class="w-full p-2 mb-4 border rounded" required>
+            <button type="submit" class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 w-full">
+                Add Hall
+            </button>
+        </form>
+    </div>
+</div>
+
+<!-- Booking Modal -->
+<div id="bookingModal" class="modal">
+    <div class="bg-white p-8 max-w-md mx-auto mt-20 rounded-lg">
+        <div class="flex justify-between mb-4">
+            <h2 class="text-2xl font-bold">Book Hall</h2>
+            <button onclick="closeModal('bookingModal')" class="text-gray-500 hover:text-gray-700">
+                <i class="bi bi-x-lg"></i>
+            </button>
+        </div>
+        <form id="bookingForm">
+            <input type="date" class="datepicker w-full p-2 mb-4 border rounded" required>
+            <input type="time" class="w-full p-2 mb-4 border rounded" required>
+            <input type="number" placeholder="Duration (hours)" min="1" class="w-full p-2 mb-4 border rounded" required>
+            <textarea placeholder="Event Details" class="w-full p-2 mb-4 border rounded" required></textarea>
+            <button type="submit" class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 w-full">
+                Confirm Booking
+            </button>
+            <button type="button" onclick="closeModal('bookingModal')" class="mt-2 bg-gray-500 text-white px-4 py-2 rounded hover:bg-gray-600 w-full">
+                Cancel
+            </button>
+        </form>
+    </div>
+</div>
+
+<script>
+// Sample hall data
+let halls = [];
+let bookings = [];
+
+// Initialize with some sample data
+function initializeData() {
+    halls = [
+        {
+            id: 1,
+            name: "Grand Ballroom",
+            description: "Elegant hall for weddings and corporate events",
+            capacity: 500,
+            price: 1000,
+            image: "https://source.unsplash.com/800x600/?hall,ballroom"
+        },
+        {
+            id: 2,
+            name: "Conference Hall",
+            description: "Professional setting for business meetings",
+            capacity: 200,
+            price: 500,
+            image: "https://source.unsplash.com/800x600/?conference,hall"
+        }
+    ];
+    renderHalls();
+}
+
+function renderHalls() {
+    const container = document.querySelector('#homePage > div');
+    container.innerHTML = halls.map(hall => `
+        <div class="bg-white rounded-lg shadow-lg overflow-hidden">
+            <img src="${hall.image}" alt="${hall.name}" class="w-full h-48 object-cover">
+            <div class="p-4">
+                <h3 class="text-xl font-bold mb-2">${hall.name}</h3>
+                <p class="text-gray-600 mb-2">${hall.description}</p>
+                <p class="text-gray-800 mb-2">Capacity: ${hall.capacity}</p>
+                <p class="text-gray-800 mb-4">Price: $${hall.price}/hour</p>
+                <button onclick="showBookingModal(${hall.id})" class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 w-full">
+                    Book Now
+                </button>
+            </div>
+        </div>
+    `).join('');
+}
+
+function showModal(modalId) {
+    document.getElementById(modalId).style.display = 'block';
+}
+
+function closeModal(modalId) {
+    document.getElementById(modalId).style.display = 'none';
+}
+
+function showHome() {
+    closeAllModals();
+    renderHalls();
+}
+
+function showUserProfile() {
+    showModal('userProfileModal');
+}
+
+function showVendorProfile() {
+    showModal('vendorProfileModal');
+}
+
+function showAddHallForm() {
+    showModal('addHallModal');
+}
+
+function showBookingModal(hallId) {
+    showModal('bookingModal');
+    // Store selected hall ID for booking
+    document.getElementById('bookingForm').setAttribute('data-hall-id', hallId);
+}
+
+function closeAllModals() {
+    const modals = document.getElementsByClassName('modal');
+    for(let modal of modals) {
+        modal.style.display = 'none';
+    }
+}
+
+// Form submission handlers
+document.getElementById('userProfileForm').addEventListener('submit', function(e) {
+    e.preventDefault();
+    // Handle user profile save
+    closeModal('userProfileModal');
+});
+
+document.getElementById('vendorProfileForm').addEventListener('submit', function(e) {
+    e.preventDefault();
+    // Handle vendor profile save
+    closeModal('vendorProfileModal');
+});
+
+document.getElementById('addHallForm').addEventListener('submit', function(e) {
+    e.preventDefault();
+    // Handle new hall addition
+    closeModal('addHallModal');
+    renderHalls();
+});
+
+document.getElementById('bookingForm').addEventListener('submit', function(e) {
+    e.preventDefault();
+    const hallId = this.getAttribute('data-hall-id');
+    const date = this.querySelector('input[type="date"]').value;
+    const time = this.querySelector('input[type="time"]').value;
+    
+    // Check if hall is already booked
+    const isBooked = bookings.some(booking => 
+        booking.hallId === hallId && 
+        booking.date === date && 
+        booking.time === time
+    );
+
+    if (isBooked) {
+        alert('This hall is already booked for the selected time slot');
+        return;
+    }
+
+    // Add booking
+    bookings.push({
+        hallId,
+        date,
+        time
+    });
+
+    closeModal('bookingModal');
+    alert('Booking confirmed successfully!');
+});
+
+// Initialize the application
+initializeData();
+
+// Handle escape key to close modals
+document.addEventListener('keydown', function(e) {
+    if(e.key === 'Escape') {
+        closeAllModals();
+    }
+});
+</script>
+
+<script>document.body.addEventListener('wheel', e => { if (!e.ctrlKey) return; e.preventDefault(); return }, { passive: false })</script>
+	</body>
+</html>
